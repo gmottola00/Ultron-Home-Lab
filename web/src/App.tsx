@@ -25,8 +25,15 @@ const TABS = [
   { id: "jarvis", label: "ultron", icon: ICONS.jarvis },
 ] as const;
 
-/** The phone has no rail footer: settings is a fifth tab in the bottom bar. */
-const PHONE_TABS = [...TABS, { id: "settings", label: "settings", icon: ICONS.settings }] as const;
+/** The phone has no rail footer: settings is a fifth tab in the bottom bar, and
+ * the agent sits in the middle one, under the thumb. */
+const PHONE_TABS = [
+  TABS[0],
+  TABS[1],
+  TABS[3],
+  TABS[2],
+  { id: "settings", label: "settings", icon: ICONS.settings },
+] as const;
 
 type Tab = (typeof TABS)[number]["id"] | "settings";
 

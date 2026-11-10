@@ -279,8 +279,10 @@ body {
 
 /* --- Phone: bottom tab bar ------------------------------------------------- */
 
+/* Only part of the home-indicator inset: the indicator is a thin line, so the
+ * icons can sit lower instead of floating over a wide empty band. */
 .pb-safe {
-  padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom: calc(env(safe-area-inset-bottom) * 0.35);
 }
 
 /* One pill for the whole bar, sliding from tab to tab with a little overshoot. */
