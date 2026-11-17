@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 360" width="1280" height="360" role="img" aria-label="Ultron: the AI operator for your Kubernetes home lab. It opens pull requests and never touches the cluster.">
+  <defs>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0V32" fill="none" stroke="#ff2a2a" stroke-opacity="0.07" stroke-width="1"/>
+    </pattern>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ff2a2a" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#ff2a2a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vignette" cx="0.3" cy="0.5" r="0.9">
+      <stop offset="0" stop-color="#1c0707"/>
+      <stop offset="1" stop-color="#070303"/>
+    </radialGradient>
+    <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="360" rx="16" fill="url(#vignette)"/>
+  <rect width="1280" height="360" rx="16" fill="url(#grid)"/>
+
+  <!-- HUD corners -->
+  <g stroke="#ff2a2a" stroke-width="3" fill="none">
+    <path d="M24 60V24H60"/>
+    <path d="M1220 24H1256V60"/>
+    <path d="M24 300V336H60"/>
+    <path d="M1256 300V336H1220"/>
+  </g>
+
+  <!-- The eye -->
+  <g transform="translate(220 180)">
+    <circle r="150" fill="url(#glow)"/>
+    <circle r="92" fill="#0b0404" stroke="#ff2a2a" stroke-width="3"/>
+    <circle r="80" fill="none" stroke="#ff2a2a" stroke-opacity="0.55" stroke-width="2" stroke-dasharray="6 7"/>
+    <circle r="34" fill="#ff2a2a" filter="url(#soft)" opacity="0.8"/>
+    <circle r="28" fill="#ff2a2a"/>
+    <circle r="9" cx="-9" cy="-9" fill="#ff8a8a" opacity="0.6"/>
+  </g>
+
+  <!-- Wordmark and pitch -->
+  <g font-family="ui-monospace, SFMono-Regular, 'JetBrains Mono', Menlo, Consolas, monospace">
+    <text x="420" y="118" fill="#ff8080" font-size="15" letter-spacing="6">HOMELAB OPERATOR · K8S · GITOPS</text>
+    <text x="414" y="200" fill="#ff2a2a" font-size="84" font-weight="700" letter-spacing="26">ULTRON</text>
+    <text x="420" y="248" fill="#f2e6e6" font-size="24" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">An AI agent that operates your cluster.</text>
+    <text x="420" y="282" fill="#b8a3a3" font-size="24" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">It opens pull requests. It never touches the cluster.</text>
+  </g>
+
+  <!-- Status line -->
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" letter-spacing="2">
+    <circle cx="1040" cy="316" r="4" fill="#2ee6a0"/>
+    <text x="1052" y="320" fill="#8a7676">GITOPS-ONLY WRITES</text>
+  </g>
+</svg>

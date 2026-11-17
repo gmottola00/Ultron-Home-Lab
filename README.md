@@ -1,32 +1,101 @@
 <div align="center">
 
-# 🤖 Ultron Home Lab
-
-**An AI agent that operates your home lab, without ever touching the cluster.**
+<img src="docs/assets/banner.svg" alt="Ultron: the AI operator for your Kubernetes home lab. It opens pull requests, never touches the cluster." width="100%">
 
 [![Backend CI](https://github.com/gmottola00/Ultron-Home-Lab/actions/workflows/backend.yml/badge.svg)](https://github.com/gmottola00/Ultron-Home-Lab/actions/workflows/backend.yml)
 [![Web CI](https://github.com/gmottola00/Ultron-Home-Lab/actions/workflows/web.yml/badge.svg)](https://github.com/gmottola00/Ultron-Home-Lab/actions/workflows/web.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![Python 3.12](https://img.shields.io/badge/python-3.12-3776AB?logo=python&logoColor=white)
 ![Node 22](https://img.shields.io/badge/node-22-339933?logo=nodedotjs&logoColor=white)
+![Kubernetes](https://img.shields.io/badge/kubernetes-read--only-326CE5?logo=kubernetes&logoColor=white)
+![ArgoCD](https://img.shields.io/badge/GitOps-ArgoCD-EF7B4D?logo=argo&logoColor=white)
 
-[Quick start](#-quick-start) · [How it works](#-how-it-works) · [Add a capability](#-adding-a-capability) · [Configuration](#-configuration) · [In my home lab](#-in-my-home-lab) · [Contributing](CONTRIBUTING.md)
+**Ask it why a pod is crashing. Tell it to scale an app. Approve the merge from your phone.**
+
+[Try it in 30 seconds](#-quick-start) · [How it works](#-how-it-works) · [Add a capability](#-adding-a-capability) · [In my home lab](#-in-my-home-lab) · [Contributing](CONTRIBUTING.md)
+
+<br>
+
+<img src="docs/assets/demo.gif" alt="Ultron checks tickup, opens a pull request to scale it, and stops for approval before merging" width="100%">
+
+<sub>Real UI, offline demo: fixtures instead of a cluster, a scripted model instead of an API key. <a href="docs/assets/demo.mp4">MP4</a></sub>
 
 </div>
 
 ---
 
-Ultron is **P0 — "hands, no face"**: a text-only agent driven from a web console
-(and installable on your phone). Ask it why a pod is crashing, what changed in
-ArgoCD, or to scale an app, and it reads Kubernetes, Prometheus, Loki, ArgoCD and
-GitHub to answer.
+## 🤖 An AI agent with no `kubectl apply`
 
-> **Ultron has no `kubectl apply` in its hands.** It writes commits and opens pull
-> requests against your infra repo and app repos; ArgoCD stays the only thing
-> that changes the cluster, so every action Ultron takes is diffable and revertible.
+Most AI agents for Kubernetes get a kubeconfig and your trust. **Ultron gets neither.**
 
-That is not a guideline, it is the architecture. There is no apply, patch, delete
+It *reads* everything (Kubernetes, Prometheus, Loki, Alertmanager, ArgoCD, GHCR) and
+*writes* only to Git, as commits and pull requests against your infra repo.
+ArgoCD stays the only thing that changes the cluster, so every action Ultron takes
+is **diffable, reviewable and revertible**.
+
+That is not a guideline, it is the architecture: there is no apply, patch, delete
 or scale tool anywhere in this codebase, and a test asserts there never is.
+
+<table>
+<tr>
+<td width="33%" valign="top">
+
+### 🔒 Safe by construction
+Reads run freely. Writes are PRs. Anything hard to reverse, like **merging**, suspends
+the run and waits for a human. No prompt can talk it past that gate.
+
+</td>
+<td width="33%" valign="top">
+
+### 📱 Approve from your phone
+Installable PWA with push notifications. The run is checkpointed in Postgres, so
+it waits for you even across a restart. Tap *Approve* and ArgoCD ships it.
+
+</td>
+<td width="33%" valign="top">
+
+### 🧪 Runs with no cluster
+`JARVIS_FAKE_TOOLS=true` serves every tool from fixtures: no cluster, no token,
+no API key. The whole agent graph is tested against a scripted model.
+
+</td>
+</tr>
+</table>
+
+### How it compares
+
+| | kubectl by hand | Agent with a kubeconfig | **Ultron** |
+|---|:---:|:---:|:---:|
+| Diagnoses from metrics, logs and events in one question | ❌ | ✅ | ✅ |
+| Every change is a reviewable PR | ⚠️ discipline | ❌ | ✅ |
+| Cannot change the cluster directly, even if prompted to | ❌ | ❌ | ✅ |
+| Undo = `git revert` | ❌ | ❌ | ✅ |
+| Human approval from your phone | ❌ | ⚠️ sometimes | ✅ |
+| Local models via LiteLLM, Claude as fallback | — | ⚠️ varies | ✅ |
+
+---
+
+## 📸 A look around
+
+<table>
+<tr>
+<td width="50%"><img src="docs/assets/status.png" alt="Status: every problem in the lab, worst first, each one a click away from an investigation"><br><sub><b>Status</b>: every problem across Kubernetes, ArgoCD and Alertmanager, worst first. <i>Investigate</i> hands one to Ultron.</sub></td>
+<td width="50%"><img src="docs/assets/approval.png" alt="The approval dialog for a destructive tool call"><br><sub><b>The gate</b>: the one moment the agent stops and a person decides.</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/assets/delivery.png" alt="Delivery: from a CI build to a running pod, per image"><br><sub><b>Delivery</b>: built, green, pinned, running, per image, without asking the agent.</sub></td>
+<td width="50%"><img src="docs/assets/tools.png" alt="Capabilities: every tool, its risk level and how often it is called"><br><sub><b>Capabilities</b>: every tool the model gets, what the gate does with it, how often it runs.</sub></td>
+</tr>
+</table>
+
+<p align="center">
+<img src="docs/assets/phone-status.png" alt="Status on iPhone" width="24%">&nbsp;
+<img src="docs/assets/phone-chat.png" alt="Chat on iPhone" width="24%">&nbsp;
+<img src="docs/assets/phone-cluster.png" alt="Cluster on iPhone" width="24%">
+<br><sub>Add it to your Home Screen: full screen, its own icon, push for pending approvals.</sub>
+</p>
+
+### Architecture
 
 ```mermaid
 flowchart LR
@@ -51,15 +120,6 @@ flowchart LR
     argo == "the only writer" ==> k8s
     ultron -. "✗ no apply / patch / delete" .-x k8s
 ```
-
-## ✨ Highlights
-
-- 🔒 **GitOps-only writes.** Changes are commits and PRs; merging is gated on a human.
-- 🧰 **Pluggable capabilities.** Kubernetes, ArgoCD, GHCR, GitHub, Prometheus, Loki, Alertmanager.
-- 🧪 **Runs offline.** `JARVIS_FAKE_TOOLS=true` serves every tool from fixtures: no cluster, token or API key needed.
-- 📱 **Phone-ready PWA** with push notifications for pending approvals.
-- 🔀 **Model gateway.** Claude, plus local models through a LiteLLM proxy; falls back to Claude only with your consent.
-- ✅ **Tested without an LLM.** The whole agent graph is driven by scripted turns.
 
 > [!WARNING]
 > The console has **no built-in authentication**. Run it behind a private network
@@ -91,6 +151,16 @@ Open <http://localhost:8100>. With `JARVIS_FAKE_TOOLS=true` (the default in
 so the dashboard populates and the deploy flow can be rehearsed offline.
 
 Add `ANTHROPIC_API_KEY` to `.env` to enable chat.
+
+**The demo from the GIF**, with no key at all: a scripted model replays the
+"scale tickup" conversation against the fixtures, approval gate included.
+
+```bash
+uv run python scripts/readme-assets/demo_server.py   # http://localhost:8100
+```
+
+`uv run scripts/readme-assets/capture.py` re-shoots every image in `docs/assets/`
+from it (needs Chrome).
 
 **While developing**, two processes are nicer than one:
 
